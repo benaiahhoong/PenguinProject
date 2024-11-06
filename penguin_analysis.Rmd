@@ -1,0 +1,105 @@
+---
+title: "penguin_alaysis"
+output: html_document
+date: "2024-10-16"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+install.packages("renv")
+
+renv::init()
+
+renv::snapshot()
+
+renv::restore()
+
+renv::diagnostics()
+
+library(tidyverse)
+library(palmerpenguins)
+library(here)
+library(janitor)
+library(ggplot2)
+
+source(here("functions", "cleaning.R"))
+```
+
+
+```{r}
+#writing a new function
+
+penguins_raw <- read.csv(here("data", "penguins_raw.csv"))
+
+cleaning_penguin_columns <- function(raw_data){
+  raw_data %>% 
+    clean_names() %>% 
+    select(-comments) %>% 
+    select(-starts_with("delta"))
+}
+
+penguins_clean <- cleaning_penguin_columns(penguins_raw)
+
+shorten_species(penguins_clean)
+
+penguins_clean <- read_csv(here("data", "penguins_clean.csv")) #relative path rather than absolute path, can be done on other computers, if i switch to a mac the slashes need to be opposite, hide embarrassing folder names
+
+
+#piping
+penguins_flippers <- penguins_clean %>% 
+  select("species", "flipper_length_mm") %>% 
+  drop_na() %>% 
+  shorten_species()
+
+species_colours <- c("Adelie" = "darkorange",
+                     "Chinstrap" = "purple",
+                     "Gentoo" = "cyan4")
+
+flipper_boxplot <- ggplot(
+  data = penguins_flippers,
+  aes(x = species,
+      y = flipper_length_mm)) +
+  geom_boxplot(aes(color=species),
+               show.legend = FALSE,
+               width = 0.3) +
+  geom_jitter(aes(color=species),
+              alpha = 0.3,
+              show.legend = FALSE,
+              position = position_jitter(
+                width = 0.2,
+                seed = 0)) +
+  scale_color_manual(values = species_colours) +
+        labs (x = "Species",
+              y = "Flipper Length (mm)") +
+  theme_bw()
+flipper_boxplot
+
+
+
+
+#remove nans
+penguins_flippers <- drop_na(penguins_flippers)
+
+```
+
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
