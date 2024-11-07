@@ -7,15 +7,7 @@ date: "2024-10-16"
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
-install.packages("renv")
-
-renv::init()
-
 renv::snapshot()
-
-renv::restore()
-
-renv::diagnostics()
 
 library(tidyverse)
 library(palmerpenguins)
@@ -40,8 +32,6 @@ cleaning_penguin_columns <- function(raw_data){
 }
 
 penguins_clean <- cleaning_penguin_columns(penguins_raw)
-
-shorten_species(penguins_clean)
 
 penguins_clean <- read_csv(here("data", "penguins_clean.csv")) #relative path rather than absolute path, can be done on other computers, if i switch to a mac the slashes need to be opposite, hide embarrassing folder names
 
