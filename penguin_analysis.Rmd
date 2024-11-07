@@ -63,7 +63,7 @@ flipper_boxplot <- ggplot(
         labs (x = "Species",
               y = "Flipper Length (mm)") +
   theme_bw()
-flipper_boxplot
+flipper_boxplot #to visualise the data
 
 
 
