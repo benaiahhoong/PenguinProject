@@ -65,9 +65,6 @@ flipper_boxplot <- ggplot(
   theme_bw()
 flipper_boxplot #to visualise the data
 
-
-
-
 #remove nans
 penguins_flippers <- drop_na(penguins_flippers)
 
